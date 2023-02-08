@@ -1,0 +1,31 @@
+version: '3'
+services:
+  tree:
+    tty: true
+    build:
+      context: .
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}      
+    volumes:
+      - .:/opt/apps/tree
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '3000:3000'
+
+  postgres:
+    image: postgres:13.2
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  redis:
+    image: redis:6.2.3
+    ports:
+      - '6379:6379'
