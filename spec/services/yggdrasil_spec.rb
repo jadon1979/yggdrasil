@@ -18,12 +18,12 @@ describe Yggdrasil, type: :model do
     expect(tree.root.right.value).to eq(Float::INFINITY)
   end 
 
+  # Test the lowest_common_ancestor method using varios scenarios
   [
     { node_a: 2820230, node_b: 2820230, lca: 2820230, root: 130 },
     { node_a: 5497637, node_b: 2820230, lca: 125, root: 130 },
     { node_a: 5497637, node_b: 130, lca: 130, root: 130 },
     { node_a: 5497637, node_b: 4430546, lca: 4430546, root: 130 },
-
   ].each do |scenario|
     context '#lowest_common_ancestor' do 
       let(:start_node) { tree.root }

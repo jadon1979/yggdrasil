@@ -6,6 +6,8 @@ Rails.application.routes.draw do
           get :common_ancestor
         end 
       end
+
+      get '/birds', to: 'birds#index' 
     end 
   end 
 end

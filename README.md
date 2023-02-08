@@ -1,24 +1,34 @@
-# README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Yggdrasil
 
-Things you may want to cover:
+A btree test.  
 
-* Ruby version
+# Setup 
 
-* System dependencies
+```
+docker-compose up -d 
+docker-compose exec tree bash
+```
 
-* Configuration
+**Initializing data**
 
-* Database creation
+```
+# Sample CSV Data: 
+#   id,parent_id 
+#   125,130 
+#   130, 
+#   282030,125 
+#   4430546,125 
+#   5497637,4430546 
+#
+# Example:
 
-* Database initialization
+CSV_FILE='./nodes.csv' rails db:populate_from_csv
+```
 
-* How to run the test suite
+## Endpoints
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```
+/api/v1/nodes/common_ancestors
+/api/v1/notes/birds
+```

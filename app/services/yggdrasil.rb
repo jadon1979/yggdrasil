@@ -3,9 +3,9 @@ class Yggdrasil
 
   TreeNode = Struct.new(:value, :depth, :left, :right)
 
-  def initialize(root_id, data)
+  def initialize(root_id, tree_data)
     @root_id = root_id
-    @data = data.to_a
+    @tree_data = tree_data.to_a
     @root ||= build_node(@root_id)
   end 
 
@@ -21,6 +21,7 @@ class Yggdrasil
     return node if node.value == value.to_i
 
     found_node = find_node_by_value(value, node.left) 
+ 
     found_node || find_node_by_value(value, node.right)
   end
   
@@ -44,6 +45,13 @@ class Yggdrasil
     !!left ? left : right 
   end 
 
+  # Check if the current node matches node_a or node_b
+  # 
+  # @param [TreeNode] the current node
+  # @param [TreeNode] node_a is the first value node
+  # @param [TreeNode] node_b is the second value node
+  #
+  # @return [TreeNode] the complete tree
   def matched_node?(node, node_a, node_b)
     node == node_a || node == node_b 
   end 
@@ -59,7 +67,7 @@ class Yggdrasil
 
     node = TreeNode.new(node_id, depth)
 
-    children = node_children(node_id).map { |n| n['node_id'] }
+    children = node_children(node_id)
 
     return node if children.empty?
 
@@ -77,9 +85,10 @@ class Yggdrasil
   #
   # @return [Array] childnodes of the given node_id
   def node_children(node_id)
-    @data.find_all do |d| 
+    children = @tree_data.select do |d| 
       d['parent_id'] == node_id
-    end.sort { |a, b| a['node_id'] <=> b['node_id'] }
-  end 
-end 
+    end.sort_by { |a| a['node_id'] }
 
+    children.map { |n| n['node_id'] }
+  end  
+end 

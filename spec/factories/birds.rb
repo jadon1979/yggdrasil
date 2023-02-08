@@ -1,5 +1,5 @@
 FactoryBot.define do  
   factory :bird do 
-    association :node
+    node_id { 0 }
   end 
 end 

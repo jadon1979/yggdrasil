@@ -1,5 +1,5 @@
 class Node < ApplicationRecord
-  has_many :birds, dependent: :destroy, primary_key: :node_id, foreign_key: :node_id
+  has_many :birds, dependent: :destroy, primary_key: :node_id
 
   # Find the root of any tree using 
   # a child node 
@@ -33,7 +33,7 @@ class Node < ApplicationRecord
   # that the root exists for both nodes 
   # and that the roots are equal.  
   # 
-  # @param[String] node_a the first node to check
+  # @param[Array] node_a the first node to check
   # @param[String] node_b the second node to check
   # 
   # @return [String, Boolean] the proper root node or false

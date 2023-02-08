@@ -30,5 +30,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_04_014752) do
     t.index ["parent_id"], name: "index_nodes_on_parent_id"
   end
 
-  add_foreign_key "birds", "nodes"
 end
