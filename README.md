@@ -33,6 +33,28 @@ CSV_FILE='./nodes.csv' rails db:populate_from_csv
 /api/v1/notes/birds
 ```
 
+## relevant files 
+```
+  config/routes.rb
+
+  app/v1/cotrollers/api/v1/birds_controller.rb
+  app/v1/cotrollers/api/v1/nodes_controller.rb
+
+  app/services/tree_builder.rb
+  app/services/yggdrasil
+
+  app/models/node.rb
+  app/models/bird.rb
+
+  spec/requests/api/v1/birds_spec.rb
+  spec/requests/api/v1/nodes_spec.rb
+
+  spec/services/tree_builder_spec.rb
+  spec/services/yggdrasil_spec.rb
+
+  lib/populate.rake
+```
+
 ## Original Instruction
 ```
 We have an adjacency list that creates a tree of nodes where a child's parent_id = a parent's id. I 
