@@ -1,17 +1,17 @@
 class Node < ApplicationRecord
   has_many :birds, dependent: :destroy, primary_key: :node_id
 
-  # Find the root of any tree using 
-  # a child node 
+  # Find the root of any tree matching 
+  # the child nodes
   #
-  # @params [String] node_id 
+  # @params [Array] node_ids
   #
   # @return [Array]
-  scope :root_by_id, ->(node_id) do 
-    return if node_id.nil?
+  scope :root_by_ids, ->(node_ids = []) do 
+    return if node_ids.nil? || node_ids.empty?
 
     ActiveRecord::Base.connection.exec_query(
-      root_by_id_sql(node_id)
+      root_by_ids_sql(node_ids)
     )
   end 
 
@@ -38,13 +38,15 @@ class Node < ApplicationRecord
   # 
   # @return [String, Boolean] the proper root node or false
   def self.verified_root_node(node_a, node_b)
-    root_a = Node.root_by_id(node_a)&.first
-    root_b = Node.root_by_id(node_b)&.first
-    missing_nodes = root_a.nil? || root_b.nil?
+    roots = Node.root_by_ids([ node_a, node_b ])
     
-    return false if missing_nodes || root_a['node_id'] != root_b['node_id']
+    # Check if we don't have a root or where the nodes are not apart 
+    # of the same tree.
+    invalid_root = roots.empty? || (roots.count == 1 && node_a != node_b) || roots.uniq.count > 1
     
-    root_a['node_id'] 
+    return false if invalid_root
+    
+    roots.first['node_id'] 
   end 
 
   private 
@@ -53,14 +55,14 @@ class Node < ApplicationRecord
   # step through nodes until we locate 
   # the root node 
   #
-  # @params[String] node_id
+  # @params[Array] node_ids
   #
   # @return[String]
-  def self.root_by_id_sql(node_id)
+  def self.root_by_ids_sql(node_ids = [])
     <<-SQL 
       with recursive treehouse as (
         SELECT * FROM nodes 
-        WHERE node_id = #{node_id}
+        WHERE node_id IN (#{node_ids.join(',')})
 
         UNION ALL
 

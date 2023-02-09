@@ -13,18 +13,18 @@ describe TreeBuilder, type: :model do
 
   it 'should generate a tree' do 
     tree = TreeBuilder.generate(130)
+    child = tree.root.children.first
+    grand_child = child.children.first
 
     expect(tree.root.value).to eq(130)
-    expect(tree.root.left.value).to eq(125)
-    expect(tree.root.right.value).to eq(Float::INFINITY)
+    expect(child.value).to eq(125)
+    expect(grand_child.value).to eq(2820230)
   end 
 
   it 'should prune the tree' do 
     tree = TreeBuilder.generate(130, [125])
-    left_node = tree.root.left
-
-    expect(left_node.left).to be_nil
-    expect(left_node.right).to be_nil
+    children = tree.root.children
+    expect(children.count).to eq(1)
   end 
  
 end 

@@ -7,15 +7,46 @@ describe Yggdrasil, type: :model do
     create(:node, node_id: 2820230, parent_id: 125)
     create(:node, node_id: 4430546, parent_id: 125)
     create(:node, node_id: 5497637, parent_id: 4430546)
+
+    create(:node, node_id: 1953914, parent_id: nil )
+    create(:node, node_id: 1954058, parent_id: 1953914 )
+    create(:node, node_id: 1954069, parent_id: 1954058 )
+    create(:node, node_id: 1954070, parent_id: 1954058 )
+    create(:node, node_id: 1954090, parent_id: 1954069 )
+    create(:node, node_id: 1954071, parent_id: 1954069 )
+    create(:node, node_id: 2448694, parent_id: 1954070 )
+    create(:node, node_id: 2898857, parent_id: 1954070 )
+    create(:node, node_id: 3506451, parent_id: 1954070 )
+    create(:node, node_id: 2448693, parent_id: 1954070 )
+    create(:node, node_id: 1954163, parent_id: 1954070 )
+    create(:node, node_id: 2671691, parent_id: 1954071 )
+    create(:node, node_id: 1954101, parent_id: 1954071 )
+    create(:node, node_id: 1954132, parent_id: 1954071 )
+    create(:node, node_id: 2897017, parent_id: 1954071 )
+    create(:node, node_id: 2448609, parent_id: 1954071 )
+    create(:node, node_id: 2909271, parent_id: 1954071 ) 
   end 
 
   let(:data) {  Node.tree_by_root(130) }
   let(:tree) { described_class.new(130, data) }
 
-  it 'should build a tree' do 
-    expect(tree.root.value).to eq(130)
-    expect(tree.root.left.value).to eq(125)
-    expect(tree.root.right.value).to eq(Float::INFINITY)
+  context 'build a tree' do
+    it 'should build a tree' do 
+      children = tree.root.children
+
+      expect(tree.root.value).to eq(130)    
+      expect(children.count).to eq(1)
+      expect(children.first.value).to eq(125)
+    end 
+
+    it 'should build a bigger tree' do 
+      data = Node.tree_by_root(1953914)
+      tree = described_class.new(1953914, data)
+      grand_child = tree.root.children.first
+
+      expect(grand_child.children.count).to eq(2)
+      expect(grand_child.value).to eq(1954058)
+    end 
   end 
 
   # Test the lowest_common_ancestor method using varios scenarios
@@ -54,16 +85,6 @@ describe Yggdrasil, type: :model do
     end 
   end 
 
-  context '#build_node' do 
-    it 'should build a tree node' do 
-      new_tree = tree.build_node(4430546)
-      
-      expect(new_tree.value).to eq(4430546)
-      expect(new_tree.left.value).to eq(5497637)
-      expect(new_tree.right.value).to eq(Float::INFINITY)
-    end 
-  end 
-
   context '#matched_node?' do 
     it 'should verify if nodes match' do 
       node_a = tree.find_node_by_value(125)
@@ -89,8 +110,8 @@ describe Yggdrasil, type: :model do
     it 'should give a sorted list of child nodes' do 
       children = tree.node_children(2)
 
-      expect(children[0]['node_id']).to eq(3)
-      expect(children[1]['node_id']).to eq(4)
+      expect(children[0]).to eq(3)
+      expect(children[1]).to eq(4)
     end 
   end 
 end 

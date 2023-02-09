@@ -1,7 +1,7 @@
 
 # Yggdrasil
 
-A btree test.  
+A tree test.  
 
 # Setup 
 
@@ -52,7 +52,7 @@ CSV_FILE='./nodes.csv' rails db:populate_from_csv
   spec/services/tree_builder_spec.rb
   spec/services/yggdrasil_spec.rb
 
-  lib/populate.rake
+  lib/tasks/populate.rake
 ```
 
 ## Original Instruction

@@ -1,7 +1,16 @@
 class Yggdrasil
   attr_accessor :root, :nodes
 
-  TreeNode = Struct.new(:value, :depth, :left, :right)
+  class TreeNode 
+    attr_accessor :value, :depth, :children, :path
+
+    def initialize(value, depth)
+      @value = value
+      @depth = depth
+      @children ||= []
+      @path ||= []
+    end
+  end 
 
   def initialize(root_id, tree_data)
     @root_id = root_id
@@ -17,12 +26,15 @@ class Yggdrasil
   # @return [TreeNode] the matched node
   def find_node_by_value(value, node = root)
     return nil if node.nil?
-
+    
     return node if node.value == value.to_i
 
-    found_node = find_node_by_value(value, node.left) 
- 
-    found_node || find_node_by_value(value, node.right)
+    node.children.each do |child|
+      found_node = find_node_by_value(value, child)
+      return found_node if found_node
+    end 
+
+    nil
   end
   
   # Find the lowest common ancestor
@@ -34,15 +46,12 @@ class Yggdrasil
   # @return [TreeNode] the lowest common ancestor node 
   def lowest_common_ancestor(node, node_a, node_b)
     return nil unless !!node && !!node_a && !!node_b
+    
+    node_id = (node_a.path & node_b.path).last
+    
+    return nil if node_id.nil?
 
-    return node if matched_node?(node, node_a, node_b)
-
-    left = lowest_common_ancestor(node.left, node_a, node_b)
-    right = lowest_common_ancestor(node.right, node_a, node_b)
-
-    return node if !!left && !!right
-
-    !!left ? left : right 
+    find_node_by_value(node_id)
   end 
 
   # Check if the current node matches node_a or node_b
@@ -62,17 +71,19 @@ class Yggdrasil
   # @param [Integer] depth - the current depth of the tree
   #
   # @return [TreeNode] the complete tree
-  def build_node(node_id, depth = 1)
+  def build_node(node_id, path = [], depth = 1)
     return TreeNode.new(Float::INFINITY, depth) if node_id.nil?
 
     node = TreeNode.new(node_id, depth)
+    node.path = path << node_id
 
     children = node_children(node_id)
 
     return node if children.empty?
 
-    node.left = build_node(children[0], depth + 1)
-    node.right = build_node(children[1], depth + 1)
+    node.children = children.map do |c| 
+      build_node(c, node.path.dup, depth + 1)
+    end 
     
     node
   end
